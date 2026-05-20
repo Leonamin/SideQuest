@@ -1,0 +1,49 @@
+# SideQuest
+
+SideQuest is a pixel RPG productivity layer where local quests reward a project pet with XP, mood changes, and growth.
+
+## Supabase Safety Policy
+
+SideQuest must use a Supabase account and projects that are separate from KoriBetween.
+
+Do not run these commands from a company Supabase CLI session in this repository:
+
+```bash
+supabase link
+supabase db push
+supabase functions deploy
+```
+
+Supabase deployment is handled through GitHub Actions with SideQuest-specific repository secrets and variables.
+
+Required GitHub Actions secrets:
+
+```text
+SUPABASE_ACCESS_TOKEN
+SUPABASE_DB_PASSWORD_DEV
+```
+
+Required GitHub Actions variables:
+
+```text
+SUPABASE_PROJECT_REF_DEV
+NEXT_PUBLIC_SUPABASE_URL_DEV
+NEXT_PUBLIC_SUPABASE_ANON_KEY_DEV
+```
+
+The workflow blocks known KoriBetween project refs before it can link or push migrations.
+
+Known blocked refs:
+
+```text
+ublirowfqjgzxfrdtlsf
+qocpkjrmvfxjchrldgfk
+```
+
+## Supabase Dev Deployment
+
+Use the `Deploy Supabase Dev` GitHub Actions workflow.
+
+By default, the workflow runs a dry run only. To apply migrations to `SideQuest-Dev`, run the workflow manually and set `apply_migrations` to `true`.
+
+The workflow only deploys database migrations under `supabase/migrations`.

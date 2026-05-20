@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+
+# Supabase local runtime state. Keep migrations and config tracked.
+supabase/.branches/
+supabase/.temp/
+
+# Local feature worktrees.
+.worktrees/

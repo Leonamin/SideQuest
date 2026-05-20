@@ -299,9 +299,16 @@ User
 
 ## 구현 목표
 
-MVP에서는 다음 두 타입만 지원한다.
+MVP에서는 `Local Project`만 지원한다.
+
+Linear Project는 2차 구현 목표로 분리한다. MVP의 검증 대상은 외부 연동이 아니라 `퀘스트 완료 → XP 지급 → 펫 성장` 게임 루프다.
+
+1차:
 
 * Local Project
+
+2차:
+
 * Linear Project
 
 GitHub Issues, Notion, Jira 연동은 후순위다.
@@ -376,9 +383,9 @@ Linear Workflow State
 
 선택 기능이다.
 
-MVP에서는 다음 방식 권장:
+2차 Linear 연동에서는 다음 방식 권장:
 
-| 동작                             | MVP 정책 |
+| 동작                             | 2차 정책 |
 | ------------------------------ | ------ |
 | Linear issue 조회                | 지원     |
 | Linear issue 완료 감지             | 지원     |
@@ -389,7 +396,7 @@ MVP에서는 다음 방식 권장:
 
 권장 정책:
 
-> MVP에서는 Linear를 “읽기 중심”으로 사용한다.
+> 2차 Linear 연동에서는 Linear를 “읽기 중심”으로 사용한다.
 > SideQuest에서 완료 버튼을 누르면 Linear의 status를 Done으로 바꾸는 기능은 V1.5 또는 옵션으로 제공한다.
 
 ---
@@ -460,7 +467,9 @@ if quest.status == "cleared" and rewardClaimedAt == null:
 
 ## Linear 동기화 구현 목표
 
-MVP 구현 순서:
+Linear 연동은 MVP 이후 2차 구현 목표로 진행한다.
+
+2차 구현 순서:
 
 1. Linear OAuth 연결
 2. 프로젝트 목록 조회
@@ -952,7 +961,7 @@ New mood unlocked: Excited
 | Login           | 로그인       | 포함  |
 | Project Select  | 프로젝트 선택   | 포함  |
 | Project Create  | 프로젝트 생성   | 포함  |
-| Linear Connect  | Linear 연결 | 포함  |
+| Linear Connect  | Linear 연결 | 2차  |
 | Quest Board     | 퀘스트 목록    | 포함  |
 | Pet Room        | 펫 상세 화면   | 포함  |
 | Reward Modal    | 보상 팝업     | 포함  |
@@ -1180,17 +1189,71 @@ type WebhookEvent = {
 
 | 영역          | 기술                               |
 | ----------- | -------------------------------- |
-| Frontend    | Next.js                          |
-| UI          | Tailwind CSS                     |
-| Backend     | Next.js Route Handlers 또는 별도 API |
+| Frontend    | Next.js App Router + TypeScript  |
+| UI          | Tailwind CSS + shadcn/ui 일부 + 커스텀 픽셀 UI |
+| Backend     | Next.js Route Handlers + Server Actions |
 | DB          | Supabase Postgres                |
 | Auth        | Supabase Auth                    |
-| ORM         | Prisma 또는 Drizzle                |
+| ORM         | Drizzle ORM                      |
 | Integration | Linear GraphQL API               |
-| Webhook     | Next.js API Route                |
+| Webhook     | Next.js Route Handler            |
 | Asset       | Pixel sprite sheets              |
 | Deployment  | Vercel                           |
 | Storage     | Supabase Storage                 |
+| Test        | Vitest + Playwright              |
+
+## 10.1.1 기술 스택 결정 원칙
+
+MVP는 `Next.js + Supabase` 중심의 단일 웹앱으로 시작한다.
+
+이유:
+
+* 로그인, 데이터베이스, 저장소를 Supabase로 빠르게 구성할 수 있다.
+* Next.js 안에서 화면, 서버 액션, API endpoint를 함께 관리할 수 있어 MVP 속도가 빠르다.
+* Linear OAuth, 수동 동기화, Webhook은 Next.js Route Handler로 처리할 수 있다.
+* 서버 코드가 커질 가능성에 대비해 도메인별 service 모듈로 분리한다.
+
+초기에는 별도 백엔드 서버를 두지 않는다.
+
+단, 다음 조건이 생기면 별도 API 서버 또는 worker 분리를 검토한다.
+
+* Linear Webhook 처리량이 많아진다.
+* 동기화 job, retry queue, background worker가 필요해진다.
+* 결제, 팀 권한, 다중 외부 연동이 복잡해진다.
+* Vercel 함수 실행 시간이나 cold start가 제품 경험에 영향을 준다.
+
+## 10.1.2 Supabase 계정 분리 및 배포 정책
+
+SideQuest는 KoriBetween Supabase 계정, 조직, 프로젝트를 사용하지 않는다.
+
+원칙:
+
+* SideQuest 전용 Supabase 계정 또는 조직을 사용한다.
+* SideQuest 전용 `SideQuest-Dev` 프로젝트를 먼저 만든다.
+* Production이 필요해지면 `SideQuest-Prod` 프로젝트를 별도로 만든다.
+* 회사 컴퓨터의 Supabase CLI 로그인 상태로 `supabase link`, `supabase db push`, `supabase functions deploy`를 실행하지 않는다.
+* Supabase 배포는 GitHub Actions에서 SideQuest 전용 `SUPABASE_ACCESS_TOKEN`으로만 수행한다.
+* GitHub Actions는 KoriBetween 프로젝트 ref를 감지하면 즉시 실패해야 한다.
+
+현재 차단해야 하는 KoriBetween project ref:
+
+```text
+KoriBetween-Dev  = ublirowfqjgzxfrdtlsf
+KoriBetween-Prod = qocpkjrmvfxjchrldgfk
+```
+
+Dev 배포에 필요한 GitHub Actions 값:
+
+Secrets:
+
+* `SUPABASE_ACCESS_TOKEN`
+* `SUPABASE_DB_PASSWORD_DEV`
+
+Variables:
+
+* `SUPABASE_PROJECT_REF_DEV`
+* `NEXT_PUBLIC_SUPABASE_URL_DEV`
+* `NEXT_PUBLIC_SUPABASE_ANON_KEY_DEV`
 
 ## 10.2 전체 아키텍처
 
@@ -1239,7 +1302,13 @@ MVP의 목표는 명확하다.
 
 > 사용자가 프로젝트를 만들고, 퀘스트를 완료하면, 픽셀 펫이 XP를 얻고 성장하는 경험을 제공한다.
 
-Linear 연동까지 포함한 MVP 목표:
+MVP에서는 Linear 연동을 제외한다.
+
+MVP의 검증 문장:
+
+> 사용자가 Local To-Do를 퀘스트로 관리하고, 완료할 때마다 프로젝트 펫이 XP를 얻고 성장한다.
+
+Linear 연동은 2차 목표다.
 
 > Linear 프로젝트를 연결하면 issue가 퀘스트로 보이고, 완료된 issue에 따라 펫이 성장한다.
 
@@ -1250,11 +1319,6 @@ Linear 연동까지 포함한 MVP 목표:
 * 로그인
 * 프로젝트 생성
 * Local Quest 생성/완료
-* Linear OAuth 연결
-* Linear Project 선택
-* Linear Issue 가져오기
-* Issue → Quest 변환
-* Done 상태 감지
 * XP 지급
 * 펫 생성
 * 펫 레벨업
@@ -1274,6 +1338,11 @@ Linear 연동까지 포함한 MVP 목표:
 * 업적
 * 월드맵
 * 랭킹
+* Linear OAuth 연결
+* Linear Project 선택
+* Linear Issue 가져오기
+* Issue → Quest 변환
+* Linear Done 상태 감지
 * GitHub 연동
 * Slack/Discord 연동
 * 복잡한 Linear issue 수정
@@ -1607,7 +1676,7 @@ AI는 이름, 대사, 설명, 퀘스트 문구를 꾸미는 선택 기능이다.
 정량:
 
 * 사용자가 프로젝트 1개 이상 생성
-* 퀘스트 5개 이상 생성 또는 동기화
+* 퀘스트 5개 이상 생성
 * 퀘스트 3개 이상 완료
 * 펫 레벨업 1회 이상 경험
 * 다음날 재방문
@@ -1633,7 +1702,9 @@ AI는 이름, 대사, 설명, 퀘스트 문구를 꾸미는 선택 기능이다.
 
 SideQuest MVP는 다음 한 문장으로 정의한다.
 
-> 사용자가 Local To-Do 또는 Linear issue를 퀘스트로 관리하고, 완료할 때마다 프로젝트 펫이 XP를 얻고 성장하는 픽셀 RPG형 생산성 웹앱.
+> 사용자가 Local To-Do를 퀘스트로 관리하고, 완료할 때마다 프로젝트 펫이 XP를 얻고 성장하는 픽셀 RPG형 생산성 웹앱.
+
+Linear issue 연동은 MVP 이후 2차 구현 목표다.
 
 MVP에서 반드시 보여줘야 하는 경험은 이것이다.
 
