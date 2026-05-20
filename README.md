@@ -2,6 +2,26 @@
 
 SideQuest is a pixel RPG productivity layer where local quests reward a project pet with XP, mood changes, and growth.
 
+## Getting Started
+
+Install dependencies and run the development server:
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser.
+
+## Scripts
+
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run test
+```
+
 ## Supabase Safety Policy
 
 SideQuest must use a Supabase account and projects that are separate from KoriBetween.
