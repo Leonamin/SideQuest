@@ -1,17 +1,8 @@
 import { calculateMood } from "@/core/domain/pets/mood-policy";
 import { applyXp, type Pet } from "@/core/domain/pets/pet";
 import type { Quest } from "@/core/domain/quests/quest";
+import type { XPLog } from "@/core/domain/xp/xp-log";
 import { getDifficultyXp } from "@/core/domain/xp/xp-policy";
-
-export type XPLog = {
-  id: string;
-  projectId: string;
-  petId: string;
-  questId: string;
-  amount: number;
-  reason: "quest_clear" | "boss_clear";
-  createdAt: Date;
-};
 
 export type CompleteQuestInput = {
   quest: Quest;

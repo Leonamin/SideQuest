@@ -67,3 +67,14 @@ Use the `Deploy Supabase Dev` GitHub Actions workflow.
 By default, the workflow runs a dry run only. To apply migrations to `SideQuest-Dev`, run the workflow manually and set `apply_migrations` to `true`.
 
 The workflow only deploys database migrations under `supabase/migrations`.
+
+## Local Supabase
+
+SideQuest uses non-default local Supabase ports to avoid colliding with other projects on the same machine:
+
+```text
+API:    http://127.0.0.1:55321
+DB:     127.0.0.1:55322
+Studio: http://127.0.0.1:55323
+Mailpit: http://127.0.0.1:55324
+```
