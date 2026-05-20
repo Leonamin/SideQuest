@@ -33,6 +33,9 @@ Implemented MVP slices:
 - Local quest board with create and complete actions.
 - XP grant, pet mood/level updates, and reward history.
 - Pet room with level progress and recent rewards.
+- Quest clear reward modal.
+- Local Supabase seed account for development.
+- pnpm-only JavaScript workflow.
 
 Linear integration remains intentionally out of MVP scope.
 
