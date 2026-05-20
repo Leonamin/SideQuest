@@ -36,8 +36,12 @@ test("creates a project, completes a quest, and shows pet rewards", async ({
   await expect(page.getByRole("heading", { name: questTitle })).toBeVisible();
   await page.getByRole("button", { name: "Complete" }).click();
 
+  await expect(page.getByRole("dialog", { name: "+30 XP" })).toBeVisible();
+  await expect(page.getByText("Quest Clear")).toBeVisible();
   await expect(page.getByRole("button", { name: "Done" })).toBeVisible();
-  await page.getByRole("link", { name: "Pet Room" }).click();
+  await page.getByRole("dialog", { name: "+30 XP" }).getByRole("link", {
+    name: "Pet Room",
+  }).click();
 
   await expect(page.getByRole("heading", { name: projectName })).toBeVisible();
   await expect(page.getByText("Lifetime XP: 30")).toBeVisible();

@@ -13,10 +13,18 @@ type QuestBoardPageProps = {
   params: Promise<{
     projectId: string;
   }>;
+  searchParams: Promise<{
+    reward?: string;
+  }>;
 };
 
-export default async function QuestBoardPage({ params }: QuestBoardPageProps) {
+export default async function QuestBoardPage({
+  params,
+  searchParams,
+}: QuestBoardPageProps) {
   const { projectId } = await params;
+  const query = await searchParams;
+  const rewardAmount = Number(query.reward);
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -164,6 +172,41 @@ export default async function QuestBoardPage({ params }: QuestBoardPageProps) {
             </div>
           )}
         </div>
+
+        {Number.isFinite(rewardAmount) && rewardAmount > 0 ? (
+          <div className="fixed inset-0 z-10 grid place-items-center bg-black/40 px-6">
+            <div
+              aria-labelledby="reward-title"
+              aria-modal="true"
+              className="w-full max-w-md border-2 border-[var(--foreground)] bg-[var(--panel)] p-6 text-center shadow-[10px_10px_0_var(--foreground)]"
+              role="dialog"
+            >
+              <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--accent)]">
+                Quest Clear
+              </p>
+              <h2 className="mt-2 text-4xl font-bold" id="reward-title">
+                +{rewardAmount} XP
+              </h2>
+              <p className="mt-4 text-[var(--muted)]">
+                Your project pet absorbed the reward.
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Link
+                  className="border-2 border-[var(--foreground)] bg-[var(--foreground)] px-4 py-3 font-bold text-[var(--background)]"
+                  href={`/projects/${projectId}/pet`}
+                >
+                  Pet Room
+                </Link>
+                <Link
+                  className="border-2 border-[var(--foreground)] bg-white px-4 py-3 font-bold"
+                  href={`/projects/${projectId}/quests`}
+                >
+                  Continue
+                </Link>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </section>
     </main>
   );
