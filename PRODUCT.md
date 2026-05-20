@@ -6,6 +6,85 @@ Linear 관련 구현 전제는 공식 문서 기준으로 잡았다. Linear는 p
 
 # SideQuest 기획서
 
+## 0. 현재 구현 상태
+
+작성 기준: 2026-05-20.
+
+MVP의 핵심 검증 루프는 구현 완료 상태다.
+
+```text
+회원가입/로그인
+→ Local Project 생성
+→ 프로젝트 펫 생성
+→ Local Quest 생성
+→ Quest 완료
+→ Reward Modal
+→ XP 지급
+→ 펫 Level / Mood / Pet Room 반영
+```
+
+현재 구현된 항목:
+
+* Supabase Auth 기반 이메일 회원가입, 로그인, 로그아웃
+* Local Project 생성 및 프로젝트 선택
+* 프로젝트 생성 시 기본 펫 생성
+* Local Quest 생성
+* Quest 완료
+* 난이도 기반 XP 지급
+* Quest별 XP 중복 지급 방지
+* 펫 level, currentXP, totalXP, evolutionStage, mood 업데이트
+* Quest Board
+* Pet Room
+* Quest Clear Reward Modal
+* 최근 XP 보상 기록
+* 픽셀 RPG 스타일의 기본 UI, 로고, favicon
+* Supabase local seed 계정
+* pnpm 기반 로컬 개발 환경
+* GitHub Actions 기반 Supabase Dev 배포 안전장치
+
+MVP 완료로 보는 항목:
+
+| 기능 | 상태 |
+| --- | --- |
+| 이메일 로그인 | 완료 |
+| 개인 Local Project | 완료 |
+| Local Quest 생성 | 완료 |
+| Local Quest 완료 | 완료 |
+| XP 지급 | 완료 |
+| 펫 생성 | 완료 |
+| 펫 레벨업 | 완료 |
+| 펫 Mood 변경 | 완료 |
+| Quest Board | 완료 |
+| Pet Room | 완료 |
+| Reward Modal | 완료 |
+| 픽셀풍 기본 UI | 완료 |
+
+MVP polish backlog:
+
+| 기능 | 상태 | 메모 |
+| --- | --- | --- |
+| Quest 수정 | 미구현 | Local CRUD 확장 |
+| Quest 삭제 | 미구현 | Local CRUD 확장 |
+| Quest 재오픈 | 미구현 | XP 회수 없음 정책 유지 |
+| Quest priority 설정 | 미구현 | Linear priority 매핑 전 local 필드만 사용 |
+| Quest dueDate 설정 | 미구현 | Local form 확장 |
+| Project 삭제/아카이브 | 미구현 | V2 또는 운영 전 보강 |
+| 프로젝트 분위기 선택 | 미구현 | 펫/대사 추천에 활용 가능 |
+| 펫 종족 선택 | 미구현 | 현재 기본 햄스터 프리셋 |
+| 펫 클릭 반응 | 미구현 | Pet Room polish |
+| 상태별 프리셋 대사 | 미구현 | AI 없이 static dialogue |
+| 레벨업/퀘스트 완료 애니메이션 | 미구현 | 게임감 강화 |
+
+MVP 이후 우선순위:
+
+1. Linear 읽기 연동
+2. Linear Done 감지 및 XP 지급
+3. Linear Webhook 동기화
+4. 게임 UI polish
+5. 팀 기능, BYOK, AI 기능
+
+---
+
 ## 1. 프로젝트 개요
 
 ### 1.1 프로젝트명
@@ -1311,6 +1390,10 @@ MVP의 검증 문장:
 
 > 사용자가 Local To-Do를 퀘스트로 관리하고, 완료할 때마다 프로젝트 펫이 XP를 얻고 성장한다.
 
+현재 구현 상태:
+
+> MVP 핵심 루프는 구현 완료. 이후 작업은 MVP polish와 Linear 2차 연동으로 분리한다.
+
 Linear 연동은 2차 목표다.
 
 > Linear 프로젝트를 연결하면 issue가 퀘스트로 보이고, 완료된 issue에 따라 펫이 성장한다.
@@ -1319,17 +1402,17 @@ Linear 연동은 2차 목표다.
 
 ### 반드시 포함
 
-* 로그인
-* 프로젝트 생성
-* Local Quest 생성/완료
-* XP 지급
-* 펫 생성
-* 펫 레벨업
-* 펫 Mood 변경
-* Quest Board
-* Pet Room
-* 보상 팝업
-* 픽셀풍 UI
+* 로그인: 완료
+* 프로젝트 생성: 완료
+* Local Quest 생성/완료: 완료
+* XP 지급: 완료
+* 펫 생성: 완료
+* 펫 레벨업: 완료
+* 펫 Mood 변경: 완료
+* Quest Board: 완료
+* Pet Room: 완료
+* 보상 팝업: 완료
+* 픽셀풍 기본 UI: 완료
 
 ### 제외
 
@@ -1380,21 +1463,27 @@ Linear 연동은 2차 목표다.
 
 구현 기능:
 
-* 로그인
-* 프로젝트 생성
-* 펫 생성
-* 퀘스트 CRUD
-* 퀘스트 완료
-* XP 지급
-* 펫 레벨업
-* Mood 변경
-* Reward modal
-* Pet Room
+* 로그인: 완료
+* 프로젝트 생성: 완료
+* 펫 생성: 완료
+* 퀘스트 생성/완료: 완료
+* 퀘스트 수정/삭제/재오픈: MVP polish backlog
+* XP 지급: 완료
+* 펫 레벨업: 완료
+* Mood 변경: 완료
+* Reward modal: 완료
+* Pet Room: 완료
 
 완료 기준:
 
 ```text
 사용자가 퀘스트를 만들고 완료하면 펫이 성장한다.
+```
+
+상태:
+
+```text
+완료
 ```
 
 ---
@@ -1414,6 +1503,12 @@ Linear 연동은 2차 목표다.
 * Issue → Quest 변환
 * 수동 동기화
 * Done issue XP 지급
+
+상태:
+
+```text
+다음 구현 목표
+```
 
 완료 기준:
 
@@ -1494,13 +1589,13 @@ Linear에서 issue를 Done으로 바꾸면 SideQuest 펫이 XP를 얻는다.
 
 | 기능           | 설명                |
 | ------------ | ----------------- |
-| 프로젝트 생성      | 사용자가 게임화할 프로젝트 생성 |
-| 퀘스트 생성/완료    | Local To-Do       |
-| XP 지급        | 완료 보상             |
-| 펫 성장         | 핵심 보상             |
-| Pet Room     | 펫 확인              |
-| Quest Board  | 작업 확인             |
-| Reward Popup | 완료 피드백            |
+| 프로젝트 생성      | 완료 |
+| 퀘스트 생성/완료    | 완료 |
+| XP 지급        | 완료 |
+| 펫 성장         | 완료 |
+| Pet Room     | 완료 |
+| Quest Board  | 완료 |
+| Reward Popup | 완료 |
 
 ## P1: Linear 핵심 연동
 
