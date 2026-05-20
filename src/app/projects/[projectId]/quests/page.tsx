@@ -53,11 +53,19 @@ export default async function QuestBoardPage({ params }: QuestBoardPageProps) {
             </p>
             <h1 className="mt-2 text-4xl font-bold">{project.name}</h1>
           </div>
-          {pet ? (
-            <div className="border-2 border-[var(--foreground)] bg-[var(--panel)] px-4 py-3 text-sm font-bold">
-              {pet.name} Lv.{pet.level} / {pet.totalXP} XP
-            </div>
-          ) : null}
+          <div className="flex flex-wrap items-center gap-3">
+            {pet ? (
+              <div className="border-2 border-[var(--foreground)] bg-[var(--panel)] px-4 py-3 text-sm font-bold">
+                {pet.name} Lv.{pet.level} / {pet.totalXP} XP
+              </div>
+            ) : null}
+            <Link
+              className="border-2 border-[var(--foreground)] bg-white px-4 py-3 text-sm font-bold"
+              href={`/projects/${projectId}/pet`}
+            >
+              Pet Room
+            </Link>
+          </div>
         </header>
 
         <form
