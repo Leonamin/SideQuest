@@ -590,6 +590,9 @@ MVP에서는 다음까지만 구현한다.
 * Quest 완료
 * Quest 상태 표시
 * XP 지급
+
+2차 Linear 연동에서 구현한다.
+
 * Linear issue 변환
 
 ---
