@@ -70,8 +70,9 @@ export async function completeQuestAction(formData: FormData): Promise<void> {
   const projectId = getRequiredString(formData, "projectId");
   const questId = getRequiredString(formData, "questId");
   const client = await getAuthenticatedQuestClient();
+  const path = `/projects/${projectId}/quests`;
 
-  await completeStoredQuest({
+  const result = await completeStoredQuest({
     questId,
     now: new Date(),
     questRepository: new SupabaseQuestRepository(client),
@@ -80,5 +81,11 @@ export async function completeQuestAction(formData: FormData): Promise<void> {
     createId: () => crypto.randomUUID(),
   });
 
-  revalidatePath(`/projects/${projectId}/quests`);
+  revalidatePath(path);
+
+  if (result.xpLog) {
+    redirect(`${path}?reward=${result.xpLog.amount}`);
+  }
+
+  redirect(path);
 }
