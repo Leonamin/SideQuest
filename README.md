@@ -7,8 +7,8 @@ SideQuest is a pixel RPG productivity layer where local quests reward a project 
 Install dependencies and run the development server:
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser.
@@ -16,11 +16,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 ## Scripts
 
 ```bash
-npm run dev
-npm run build
-npm run lint
-npm run test
-npm run e2e
+pnpm dev
+pnpm build
+pnpm lint
+pnpm test
+pnpm e2e
 ```
 
 ## MVP Status
@@ -41,7 +41,7 @@ Linear integration remains intentionally out of MVP scope.
 Public smoke coverage runs with:
 
 ```bash
-npm run e2e
+pnpm e2e
 ```
 
 The authenticated local game-loop E2E test is skipped unless these environment variables are set for a SideQuest-only Supabase project:

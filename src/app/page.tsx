@@ -1,10 +1,18 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[var(--background)] px-6 py-10 text-[var(--foreground)]">
       <section className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-5xl flex-col justify-between">
         <div className="max-w-2xl">
+          <Image
+            alt="SideQuest logo"
+            className="mb-6 h-28 w-28 border-2 border-[var(--foreground)] bg-[var(--panel)] p-2 shadow-[6px_6px_0_var(--foreground)]"
+            height={112}
+            src="/sidequest-logo.svg"
+            width={112}
+          />
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
             SideQuest
           </p>

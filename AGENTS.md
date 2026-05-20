@@ -29,6 +29,12 @@
   - `needs...` for requirement
 - Avoid prefix-less boolean names such as `ready`, `saving`, `loading`, `recommended`, `processing`, or `valid`.
 
+## Package Manager Rules
+
+- Use pnpm for all JavaScript package and script commands.
+- Do not use `npm install`, `npm run`, `npx`, or commit `package-lock.json`.
+- Commit `pnpm-lock.yaml` whenever dependencies change.
+
 ## Next.js Rules
 
 <!-- BEGIN:nextjs-agent-rules -->
