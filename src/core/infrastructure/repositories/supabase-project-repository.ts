@@ -32,6 +32,19 @@ export class SupabaseProjectRepository implements ProjectRepository {
 
     return result.data ? toProject(result.data) : null;
   }
+
+  async listByOwnerId(ownerId: string): Promise<Project[]> {
+    const result = await this.client
+      .from("projects")
+      .select("*")
+      .eq("owner_id", ownerId)
+      .order("created_at", { ascending: false });
+    throwOnSupabaseError(result);
+
+    return ((result.data as ProjectRow[] | null | undefined) ?? []).map(
+      toProject,
+    );
+  }
 }
 
 function toProjectRow(project: Project): ProjectRow {

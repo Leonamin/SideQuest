@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-[var(--background)] px-6 py-10 text-[var(--foreground)]">
@@ -13,6 +15,21 @@ export default function Home() {
             The MVP starts with a local quest board, XP rewards, and a project
             pet room before any Linear integration is added.
           </p>
+        </div>
+
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link
+            className="border-2 border-[var(--foreground)] bg-[var(--foreground)] px-4 py-3 font-bold text-[var(--background)]"
+            href="/login"
+          >
+            Enter SideQuest
+          </Link>
+          <Link
+            className="border-2 border-[var(--foreground)] bg-white px-4 py-3 font-bold"
+            href="/projects"
+          >
+            Project Select
+          </Link>
         </div>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-3">
