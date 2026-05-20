@@ -20,6 +20,37 @@ npm run dev
 npm run build
 npm run lint
 npm run test
+npm run e2e
+```
+
+## MVP Status
+
+Implemented MVP slices:
+
+- Supabase dev deployment safety workflow and local port isolation.
+- Next.js app foundation with Clean Architecture folders.
+- Local project creation with Supabase Auth.
+- Local quest board with create and complete actions.
+- XP grant, pet mood/level updates, and reward history.
+- Pet room with level progress and recent rewards.
+
+Linear integration remains intentionally out of MVP scope.
+
+## E2E Tests
+
+Public smoke coverage runs with:
+
+```bash
+npm run e2e
+```
+
+The authenticated local game-loop E2E test is skipped unless these environment variables are set for a SideQuest-only Supabase project:
+
+```text
+E2E_EMAIL
+E2E_PASSWORD
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 ```
 
 ## Supabase Safety Policy
