@@ -8,6 +8,7 @@ export type CompleteQuestInput = {
   quest: Quest;
   pet: Pet;
   now: Date;
+  createId?: () => string;
 };
 
 export type CompleteQuestResult = {
@@ -46,7 +47,7 @@ export function completeQuest(input: CompleteQuestInput): CompleteQuestResult {
       mood,
     },
     xpLog: {
-      id: crypto.randomUUID(),
+      id: input.createId?.() ?? crypto.randomUUID(),
       projectId: input.quest.projectId,
       petId: input.pet.id,
       questId: input.quest.id,
