@@ -163,7 +163,7 @@ Reward policy:
 Run:
 
 ```bash
-npx create-next-app@latest . --ts --tailwind --eslint --app --src-dir --import-alias "@/*"
+pnpm create next-app@latest . --ts --tailwind --eslint --app --src-dir --import-alias "@/*"
 ```
 
 Expected:
@@ -177,13 +177,13 @@ Creates a Next.js App Router project without removing PRODUCT.md, README.md, sup
 Run:
 
 ```bash
-npm install -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom playwright
+pnpm add -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom playwright
 ```
 
 Expected:
 
 ```text
-Dependencies are added to package.json and package-lock.json.
+Dependencies are added to package.json and pnpm-lock.yaml.
 ```
 
 - [ ] **Step 3: Add architecture boundary test**
@@ -245,9 +245,9 @@ Ensure `package.json` contains:
 Run:
 
 ```bash
-npm run test
-npm run lint
-npm run build
+pnpm test
+pnpm lint
+pnpm build
 ```
 
 Expected:
@@ -261,7 +261,7 @@ All commands exit 0.
 Run:
 
 ```bash
-git add package.json package-lock.json next.config.ts tsconfig.json vitest.config.ts playwright.config.ts src tests
+git add package.json pnpm-lock.yaml next.config.ts tsconfig.json vitest.config.ts playwright.config.ts src tests
 git commit -m "feat(nextjs): scaffold app foundation"
 git push -u origin feat/app-foundation
 gh pr create --base main --head feat/app-foundation --title "feat(nextjs): scaffold app foundation"
@@ -333,7 +333,7 @@ describe("completeQuest", () => {
 Run:
 
 ```bash
-npm run test -- tests/unit/domain/complete-quest.test.ts
+pnpm test -- tests/unit/domain/complete-quest.test.ts
 ```
 
 Expected:
@@ -393,9 +393,9 @@ Add a test where `rewardClaimedAt` is already set and assert no new XP is grante
 Run:
 
 ```bash
-npm run test
-npm run lint
-npm run build
+pnpm test
+pnpm lint
+pnpm build
 ```
 
 - [ ] **Step 6: Commit and PR**
@@ -439,8 +439,8 @@ Required security:
 Verification:
 
 ```bash
-npm run test
-npm run lint
+pnpm test
+pnpm lint
 supabase db start
 supabase db reset
 ```

@@ -12,6 +12,7 @@ export interface SupabaseFilterBuilder<T = unknown>
 }
 
 export interface SupabaseQueryBuilder extends SupabaseFilterBuilder {
+  insert(row: Record<string, unknown>): Promise<SupabaseResponse<unknown>>;
   upsert(row: Record<string, unknown>): Promise<SupabaseResponse<unknown>>;
 }
 

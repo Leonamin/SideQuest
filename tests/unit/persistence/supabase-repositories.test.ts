@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { SupabaseQuestRepository } from "@/core/infrastructure/repositories/supabase-quest-repository";
 import { SupabasePetRepository } from "@/core/infrastructure/repositories/supabase-pet-repository";
+import { SupabaseXPLogRepository } from "@/core/infrastructure/repositories/supabase-xp-log-repository";
 
 describe("Supabase repositories", () => {
   it("maps quest fields to snake_case rows when saving", async () => {
@@ -76,5 +77,33 @@ describe("Supabase repositories", () => {
         updatedAt: now,
       }),
     ).rejects.toThrow("permission denied");
+  });
+
+  it("inserts XP logs without requiring update grants", async () => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    const repository = new SupabaseXPLogRepository({
+      from: vi.fn().mockReturnValue({ insert }),
+    });
+    const now = new Date("2026-05-20T00:00:00.000Z");
+
+    await repository.save({
+      id: "xp-log-1",
+      projectId: "project-1",
+      petId: "pet-1",
+      questId: "quest-1",
+      amount: 30,
+      reason: "quest_clear",
+      createdAt: now,
+    });
+
+    expect(insert).toHaveBeenCalledWith({
+      id: "xp-log-1",
+      project_id: "project-1",
+      pet_id: "pet-1",
+      quest_id: "quest-1",
+      amount: 30,
+      reason: "quest_clear",
+      created_at: now.toISOString(),
+    });
   });
 });

@@ -19,7 +19,7 @@ export class SupabaseXPLogRepository implements XPLogRepository {
   constructor(private readonly client: SupabaseClientPort) {}
 
   async save(xpLog: XPLog): Promise<void> {
-    const result = await this.client.from("xp_logs").upsert(toXPLogRow(xpLog));
+    const result = await this.client.from("xp_logs").insert(toXPLogRow(xpLog));
     throwOnSupabaseError(result);
   }
 
